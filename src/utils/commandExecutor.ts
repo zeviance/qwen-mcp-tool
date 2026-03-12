@@ -31,7 +31,7 @@ export async function executeCommand(
     let progressInterval: NodeJS.Timeout | null = null;
 
     const child = spawn(command, args, {
-      shell: false,
+      shell: process.platform === "win32",
       stdio: ["ignore", "pipe", "pipe"]
     });
 
