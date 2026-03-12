@@ -71,11 +71,14 @@ export async function executeQwenCLI(
     args.push(CLI.FLAGS.DEBUG);
   }
 
-  // Add prompt flag with the prompt
-  // Wrap in quotes if it contains @ symbols for file references
-  const shouldQuote = prompt.includes("@");
-  args.push(CLI.FLAGS.PROMPT);
-  args.push(shouldQuote ? `"${prompt}"` : prompt);
+
+  // Use -p flag for prompts with @file references (required for file expansion),
+  // positional arg otherwise (-p is deprecated and conflicts in non-file contexts)
+  if (prompt.includes("@")) {
+    args.push(CLI.FLAGS.PROMPT, prompt);
+  } else {
+    args.push(prompt);
+  }
 
   logger.info(`Executing Qwen CLI with model: ${model || "default"}`);
 
